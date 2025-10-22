@@ -5,7 +5,9 @@ import {
   logoutController,
   refreshController,
   registerController,
+  userInfoController,
 } from "../controllers/auth.js";
+import { authenticate } from "../middlewares/authenticate.js";
 
 export const authRouter = Router();
 
@@ -15,4 +17,6 @@ authRouter.post("/login", ctrlWrapper(loginController));
 
 authRouter.post("/refresh", ctrlWrapper(refreshController));
 
-authRouter.get("/logout", ctrlWrapper(logoutController));
+authRouter.get("/logout", authenticate, ctrlWrapper(logoutController));
+
+authRouter.get("/user-info", authenticate, ctrlWrapper(userInfoController));

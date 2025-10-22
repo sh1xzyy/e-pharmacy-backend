@@ -3,6 +3,7 @@ import {
   logoutUser,
   refreshUser,
   registerUser,
+  userInfo,
 } from "../services/auth.js";
 
 export const registerController = async (req, res) => {
@@ -43,5 +44,15 @@ export const logoutController = async (req, res) => {
   res.status(200).json({
     status: 200,
     message: "Successfully logged out",
+  });
+};
+
+export const userInfoController = async (req, res) => {
+  const data = await userInfo(req);
+
+  res.status(200).json({
+    status: 200,
+    message: "Successfully retrieved user information",
+    data,
   });
 };

@@ -107,3 +107,10 @@ export const logoutUser = async (res) => {
     secure: true,
   });
 };
+
+export const userInfo = async (req) => {
+  const user = await CustomerCollection.findById({ _id: req.user.id });
+
+  const { password, ...dataWithoutPass } = user.toObject();
+  return dataWithoutPass;
+};
