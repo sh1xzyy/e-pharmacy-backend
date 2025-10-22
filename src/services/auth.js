@@ -100,3 +100,17 @@ export const refreshUser = async (req, res) => {
 
   return { accessToken: newAccessToken, refreshToken: newRefreshToken };
 };
+
+export const logoutUser = async (res) => {
+  res.clearCookie("refreshToken", {
+    httpOnly: true,
+    secure: true,
+  });
+};
+
+export const userInfo = async (req) => {
+  const user = await CustomerCollection.findById({ _id: req.user.id });
+
+  const { password, ...dataWithoutPass } = user.toObject();
+  return dataWithoutPass;
+};
