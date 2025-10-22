@@ -20,8 +20,8 @@ export const registerUser = async (payload) => {
   return newUser;
 };
 
-export const loginUser = async (payload) => {
-  const { email, password, id } = payload;
+export const loginUser = async (req, res) => {
+  const { email, password } = req.body;
   const user = await CustomerCollection.findOne({ email });
 
   if (!user) throw createHttpError(401, "Email or password is invalid");
@@ -32,19 +32,71 @@ export const loginUser = async (payload) => {
     throw createHttpError(401, "Email or password is invalid");
 
   const accessToken = jwt.sign(
-    { userId: id },
+    { userId: user._id },
     getEnvVar("ACCESS_TOKEN_SECRET"),
     {
       expiresIn: "15m",
     }
   );
   const refreshToken = jwt.sign(
-    { userId: id },
+    { userId: user._id },
     getEnvVar("REFRESH_TOKEN_SECRET"),
     {
       expiresIn: "7d",
     }
   );
 
+  res.cookie("refreshToken", refreshToken, {
+    httpOnly: true,
+    secure: true,
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+  });
+
   return { accessToken, refreshToken };
+};
+
+export const refreshUser = async (req, res) => {
+  const { refreshToken } = req.cookies;
+
+  if (!refreshToken) {
+    throw createHttpError(400, "No refresh token provided");
+  }
+
+  if (!refreshToken) {
+    throw createHttpError(400, "No refresh token");
+  }
+
+  const decoded = jwt.verify(refreshToken, getEnvVar("REFRESH_TOKEN_SECRET"));
+
+  if (!decoded) {
+    throw createHttpError(401, "Invalid token or refresh token is expired");
+  }
+
+  const user = await CustomerCollection.findOne({ _id: decoded.userId });
+
+  if (!user) throw createHttpError(401, "User not found");
+
+  const newAccessToken = jwt.sign(
+    { userId: user._id },
+    getEnvVar("ACCESS_TOKEN_SECRET"),
+    {
+      expiresIn: "15m",
+    }
+  );
+
+  const newRefreshToken = jwt.sign(
+    { userId: user._id },
+    getEnvVar("REFRESH_TOKEN_SECRET"),
+    {
+      expiresIn: "7d",
+    }
+  );
+
+  res.cookie("refreshToken", newRefreshToken, {
+    httpOnly: true,
+    secure: true,
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+  });
+
+  return { accessToken: newAccessToken, refreshToken: newRefreshToken };
 };
