@@ -100,3 +100,10 @@ export const refreshUser = async (req, res) => {
 
   return { accessToken: newAccessToken, refreshToken: newRefreshToken };
 };
+
+export const logoutUser = async (res) => {
+  res.clearCookie("refreshToken", {
+    httpOnly: true,
+    secure: true,
+  });
+};
