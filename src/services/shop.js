@@ -23,8 +23,10 @@ export const updateShop = async (req) => {
 export const getProducts = async (req) => {
   const { shopId } = req.params;
 
-  const data = await ProductsCollection.find({ shopId });
-  return data;
+  const shop = await ShopCollection.findById(shopId).populate("productIds");
+  if (!shop) throw createHttpError(404, "Shop not found");
+
+  return shop.productIds;
 };
 
 export const addProduct = async (req) => {
@@ -33,13 +35,16 @@ export const addProduct = async (req) => {
   const shop = await ShopCollection.findById(shopId);
   if (!shop) throw createHttpError(404, "Shop not found");
 
-  const data = await ProductsCollection.create({
+  const product = await ProductsCollection.create({
     ...req.body,
     photo: req.photo,
     shopId,
   });
 
-  return data;
+  shop.productIds.push(product._id);
+  await shop.save();
+
+  return product;
 };
 
 export const getProductById = async (req) => {
@@ -48,12 +53,45 @@ export const getProductById = async (req) => {
   const shop = await ShopCollection.findById(shopId);
   if (!shop) throw createHttpError(404, "Shop not found");
 
-  const product = await ProductsCollection.findOne({
-    _id: productId,
-    shopId,
-  });
+  if (!shop.productIds.includes(productId)) {
+    throw createHttpError(404, "Product not found in this shop");
+  }
 
-  if (!product) throw createHttpError(404, "Product not found");
-
+  const product = await ProductsCollection.findById(productId);
   return product;
+};
+
+export const updateProductById = async (req) => {
+  const { shopId, productId } = req.params;
+
+  const shop = await ShopCollection.findById(shopId);
+  if (!shop) throw createHttpError(404, "Shop not found");
+
+  if (!shop.productIds.includes(productId)) {
+    throw createHttpError(404, "Product not found in this shop");
+  }
+
+  const updatedProduct = await ProductsCollection.findByIdAndUpdate(
+    productId,
+    req.body,
+    { new: true }
+  );
+
+  return updatedProduct;
+};
+
+export const deleteProductById = async (req) => {
+  const { shopId, productId } = req.params;
+
+  const shop = await ShopCollection.findById(shopId);
+  if (!shop) throw createHttpError(404, "Shop not found");
+
+  if (!shop.productIds.includes(productId)) {
+    throw createHttpError(404, "Product not found in this shop");
+  }
+
+  shop.productIds = shop.productIds.filter((id) => id.toString() !== productId);
+  await shop.save();
+
+  await ProductsCollection.findByIdAndDelete(productId);
 };

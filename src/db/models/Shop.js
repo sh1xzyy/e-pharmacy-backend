@@ -1,5 +1,4 @@
 import { model, Schema } from "mongoose";
-import { ProductsSchema } from "./Products";
 
 export const ShopSchema = new Schema(
   {
@@ -35,7 +34,7 @@ export const ShopSchema = new Schema(
       type: Boolean,
       required: true,
     },
-    products: [ProductsSchema],
+    productIds: [{ type: Schema.Types.ObjectId, ref: "products" }],
   },
   { versionKey: false, timestamps: true }
 );

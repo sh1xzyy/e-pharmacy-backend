@@ -1,9 +1,11 @@
 import {
   addProduct,
   createShop,
+  deleteProductById,
   getProductById,
   getProducts,
   getShopInfo,
+  updateProductById,
   updateShop,
 } from "../services/shop.js";
 import { saveFileToCloudinary } from "../utils/saveFileToCloudinary.js";
@@ -65,13 +67,31 @@ export const addProductController = async (req, res) => {
   });
 };
 
-export const getProductByIdController = async (req, res) => {};
-const data = await getProductById(req);
+export const getProductByIdController = async (req, res) => {
+  const data = await getProductById(req);
 
-res.status(200).json({
-  status: 200,
-  message: "Product retrieved successfully",
-  data,
-});
+  res.status(200).json({
+    status: 200,
+    message: "Product retrieved successfully",
+    data,
+  });
+};
 
-export const updateProductByIdController = async (req, res) => {};
+export const updateProductByIdController = async (req, res) => {
+  const data = await updateProductById(req);
+
+  res.status(200).json({
+    status: 200,
+    message: "Product updated successfully",
+    data,
+  });
+};
+
+export const deleteProductByIdController = async (req, res) => {
+  await deleteProductById(req);
+
+  res.status(200).json({
+    status: 200,
+    message: "Product deleted successfully",
+  });
+};

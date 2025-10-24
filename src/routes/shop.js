@@ -3,9 +3,11 @@ import { authenticate } from "../middlewares/authenticate.js";
 import {
   addProductController,
   createShopController,
+  deleteProductByIdController,
   getProductByIdController,
   getProductsController,
   getShopInfoController,
+  updateProductByIdController,
   updateShopController,
 } from "../controllers/shop.js";
 import { ctrlWrapper } from "../utils/ctrlWrapper.js";
@@ -37,13 +39,13 @@ shopRouter.get(
   authenticate,
   ctrlWrapper(getProductByIdController)
 );
-// shopRouter.put(
-//   "/:shopId/product/:productId/edit",
-//   authenticate,
-//   ctrlWrapper(updateProductByIdController)
-// );
-// shopRouter.delete(
-//   "/:shopId/product/:productId/delete",
-//   authenticate,
-//   ctrlWrapper(deleteProductByIdController)
-// );
+shopRouter.put(
+  "/:shopId/product/:productId/edit",
+  authenticate,
+  ctrlWrapper(updateProductByIdController)
+);
+shopRouter.delete(
+  "/:shopId/product/:productId/delete",
+  authenticate,
+  ctrlWrapper(deleteProductByIdController)
+);
