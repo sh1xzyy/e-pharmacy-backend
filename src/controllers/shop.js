@@ -1,6 +1,7 @@
 import {
   addProduct,
   createShop,
+  getProductById,
   getProducts,
   getShopInfo,
   updateShop,
@@ -63,3 +64,14 @@ export const addProductController = async (req, res) => {
     data,
   });
 };
+
+export const getProductByIdController = async (req, res) => {};
+const data = await getProductById(req);
+
+res.status(200).json({
+  status: 200,
+  message: "Product retrieved successfully",
+  data,
+});
+
+export const updateProductByIdController = async (req, res) => {};

@@ -41,3 +41,19 @@ export const addProduct = async (req) => {
 
   return data;
 };
+
+export const getProductById = async (req) => {
+  const { shopId, productId } = req.params;
+
+  const shop = await ShopCollection.findById(shopId);
+  if (!shop) throw createHttpError(404, "Shop not found");
+
+  const product = await ProductsCollection.findOne({
+    _id: productId,
+    shopId,
+  });
+
+  if (!product) throw createHttpError(404, "Product not found");
+
+  return product;
+};

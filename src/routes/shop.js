@@ -3,6 +3,7 @@ import { authenticate } from "../middlewares/authenticate.js";
 import {
   addProductController,
   createShopController,
+  getProductByIdController,
   getProductsController,
   getShopInfoController,
   updateShopController,
@@ -31,11 +32,11 @@ shopRouter.post(
   upload.single("photo"),
   ctrlWrapper(addProductController)
 );
-// shopRouter.get(
-//   "/:shopId/product/:productId",
-//   authenticate,
-//   ctrlWrapper(getProductByIdController)
-// );
+shopRouter.get(
+  "/:shopId/product/:productId",
+  authenticate,
+  ctrlWrapper(getProductByIdController)
+);
 // shopRouter.put(
 //   "/:shopId/product/:productId/edit",
 //   authenticate,
