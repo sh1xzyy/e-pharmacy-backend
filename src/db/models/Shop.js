@@ -34,6 +34,7 @@ export const ShopSchema = new Schema(
       type: Boolean,
       required: true,
     },
+    productIds: [{ type: Schema.Types.ObjectId, ref: "products" }],
   },
   { versionKey: false, timestamps: true }
 );

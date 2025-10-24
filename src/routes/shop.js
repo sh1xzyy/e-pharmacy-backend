@@ -3,8 +3,11 @@ import { authenticate } from "../middlewares/authenticate.js";
 import {
   addProductController,
   createShopController,
+  deleteProductByIdController,
+  getProductByIdController,
   getProductsController,
   getShopInfoController,
+  updateProductByIdController,
   updateShopController,
 } from "../controllers/shop.js";
 import { ctrlWrapper } from "../utils/ctrlWrapper.js";
@@ -31,18 +34,18 @@ shopRouter.post(
   upload.single("photo"),
   ctrlWrapper(addProductController)
 );
-// shopRouter.get(
-//   "/:shopId/product/:productId",
-//   authenticate,
-//   ctrlWrapper(getProductByIdController)
-// );
-// shopRouter.put(
-//   "/:shopId/product/:productId/edit",
-//   authenticate,
-//   ctrlWrapper(updateProductByIdController)
-// );
-// shopRouter.delete(
-//   "/:shopId/product/:productId/delete",
-//   authenticate,
-//   ctrlWrapper(deleteProductByIdController)
-// );
+shopRouter.get(
+  "/:shopId/product/:productId",
+  authenticate,
+  ctrlWrapper(getProductByIdController)
+);
+shopRouter.put(
+  "/:shopId/product/:productId/edit",
+  authenticate,
+  ctrlWrapper(updateProductByIdController)
+);
+shopRouter.delete(
+  "/:shopId/product/:productId/delete",
+  authenticate,
+  ctrlWrapper(deleteProductByIdController)
+);
