@@ -1,11 +1,17 @@
-import { createShop, getShopInfo, updateShop } from "../services/shop.js";
+import {
+  createShop,
+  getProducts,
+  getShopInfo,
+  updateShop,
+} from "../services/shop.js";
 
 export const createShopController = async (req, res) => {
-  await createShop(req);
+  const data = await createShop(req);
 
   res.status(201).json({
     status: 201,
     message: "Shop created successfully",
+    data,
   });
 };
 
@@ -25,5 +31,15 @@ export const updateShopController = async (req, res) => {
   res.status(200).json({
     status: 200,
     message: "Shop updated successfully",
+  });
+};
+
+export const getProductsController = async (req, res) => {
+  const data = await getProducts(req);
+
+  res.status(200).json({
+    status: 200,
+    message: "Get products successfully",
+    data,
   });
 };
