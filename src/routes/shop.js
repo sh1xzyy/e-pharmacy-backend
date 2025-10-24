@@ -1,12 +1,14 @@
 import { Router } from "express";
 import { authenticate } from "../middlewares/authenticate.js";
 import {
+  addProductController,
   createShopController,
   getProductsController,
   getShopInfoController,
   updateShopController,
 } from "../controllers/shop.js";
 import { ctrlWrapper } from "../utils/ctrlWrapper.js";
+import { upload } from "../middlewares/upload.js";
 
 export const shopRouter = Router();
 
@@ -23,11 +25,12 @@ shopRouter.get(
   authenticate,
   ctrlWrapper(getProductsController)
 );
-// shopRouter.post(
-//   "/:shopId/product/add",
-//   authenticate,
-//   ctrlWrapper(addProductController)
-// );
+shopRouter.post(
+  "/:shopId/product/add",
+  authenticate,
+  upload.single("photo"),
+  ctrlWrapper(addProductController)
+);
 // shopRouter.get(
 //   "/:shopId/product/:productId",
 //   authenticate,

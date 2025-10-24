@@ -4,7 +4,7 @@ import {
   nameRegex,
   passwordRegex,
   phoneRegex,
-} from "../../constants/constants.js";
+} from "../../constants/index.js";
 
 const customerSchema = new Schema(
   {

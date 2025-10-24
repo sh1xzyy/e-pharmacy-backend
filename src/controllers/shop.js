@@ -1,9 +1,11 @@
 import {
+  addProduct,
   createShop,
   getProducts,
   getShopInfo,
   updateShop,
 } from "../services/shop.js";
+import { saveFileToCloudinary } from "../utils/saveFileToCloudinary.js";
 
 export const createShopController = async (req, res) => {
   const data = await createShop(req);
@@ -40,6 +42,24 @@ export const getProductsController = async (req, res) => {
   res.status(200).json({
     status: 200,
     message: "Get products successfully",
+    data,
+  });
+};
+
+export const addProductController = async (req, res) => {
+  let imageUrl = null;
+  if (req.file) {
+    imageUrl = await saveFileToCloudinary(req.file);
+  }
+
+  const data = await addProduct({
+    ...req,
+    photo: imageUrl,
+  });
+
+  res.status(201).json({
+    status: 201,
+    message: "Add product successfully",
     data,
   });
 };
