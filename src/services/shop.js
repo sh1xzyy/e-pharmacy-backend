@@ -16,10 +16,16 @@ export const createShop = async (req) => {
 };
 
 export const getShopInfo = async (req) => {
+  const userId = req.user.id;
   const { shopId } = req.params;
 
-  const data = await ShopCollection.findById(shopId);
-  return data;
+  const shop = await ShopCollection.findOne({
+    _id: shopId,
+    owner: userId,
+  });
+  if (!shop) throw createHttpError(400, "Shop not found");
+
+  return shop;
 };
 
 export const updateShop = async (req) => {
