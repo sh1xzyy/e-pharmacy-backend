@@ -80,14 +80,14 @@ export const addProduct = async (req) => {
 };
 
 export const getProductById = async (req) => {
+  const userId = req.user.id;
   const { shopId, productId } = req.params;
 
-  const shop = await ShopCollection.findById(shopId);
+  const shop = await ShopCollection.findById({
+    _id: shopId,
+    owner: userId,
+  });
   if (!shop) throw createHttpError(404, "Shop not found");
-
-  if (!shop.productIds.includes(productId)) {
-    throw createHttpError(404, "Product not found in this shop");
-  }
 
   const product = await ProductsCollection.findById(productId);
   return product;
