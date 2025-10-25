@@ -113,9 +113,13 @@ export const updateProductById = async (req) => {
 };
 
 export const deleteProductById = async (req) => {
+  const userId = req.user.id;
   const { shopId, productId } = req.params;
 
-  const shop = await ShopCollection.findById(shopId);
+  const shop = await ShopCollection.findOne({
+    _id: shopId,
+    owner: userId,
+  });
   if (!shop) throw createHttpError(404, "Shop not found");
 
   if (!shop.productIds.includes(productId)) {
