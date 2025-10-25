@@ -1,9 +1,18 @@
+import createHttpError from "http-errors";
+import { CustomerCollection } from "../db/models/Customer.js";
 import { ProductsCollection } from "../db/models/Products.js";
 import { ShopCollection } from "../db/models/Shop.js";
 
 export const createShop = async (req) => {
-  const data = await ShopCollection.create(req.body);
-  return data;
+  const userId = req.user.id;
+
+  const existingShop = await ShopCollection.findOne({ owner: userId });
+  if (existingShop) throw createHttpError(400, "User already has a shop");
+
+  const shop = await ShopCollection.create({ ...req.body, owner: userId });
+
+  await CustomerCollection.findByIdAndUpdate(userId, { shop: shop._id });
+  return shop;
 };
 
 export const getShopInfo = async (req) => {
