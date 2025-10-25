@@ -29,10 +29,19 @@ export const getShopInfo = async (req) => {
 };
 
 export const updateShop = async (req) => {
+  const userId = req.user.id;
   const { shopId } = req.params;
 
-  const updatedData = await ShopCollection.findByIdAndUpdate(shopId, req.body);
-  return updatedData;
+  const existingShop = await ShopCollection.findOne({
+    _id: shopId,
+    owner: userId,
+  });
+  if (!existingShop) throw createHttpError(400, "Shop not found");
+
+  const updatedShop = await ShopCollection.findByIdAndUpdate(shopId, req.body, {
+    new: true,
+  });
+  return updatedShop;
 };
 
 export const getProducts = async (req) => {
