@@ -1,12 +1,7 @@
 import { model, Schema } from "mongoose";
-import {
-  emailRegex,
-  nameRegex,
-  passwordRegex,
-  phoneRegex,
-} from "../../constants/index.js";
+import { emailRegex, nameRegex, phoneRegex } from "../../constants/index.js";
 
-const customerSchema = new Schema(
+const CustomerSchema = new Schema(
   {
     name: {
       type: String,
@@ -26,7 +21,6 @@ const customerSchema = new Schema(
     },
     password: {
       type: String,
-      match: passwordRegex,
       required: true,
     },
     photo: {
@@ -39,8 +33,9 @@ const customerSchema = new Schema(
     address: {
       type: String,
     },
+    shop: { type: Schema.Types.ObjectId, ref: "shops" },
   },
   { versionKey: false, timestamps: true }
 );
 
-export const CustomerCollection = model("customers", customerSchema);
+export const CustomerCollection = model("customers", CustomerSchema);

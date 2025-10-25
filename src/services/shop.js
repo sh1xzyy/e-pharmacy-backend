@@ -1,38 +1,70 @@
+import createHttpError from "http-errors";
+import { CustomerCollection } from "../db/models/Customer.js";
 import { ProductsCollection } from "../db/models/Products.js";
 import { ShopCollection } from "../db/models/Shop.js";
 
 export const createShop = async (req) => {
-  const data = await ShopCollection.create(req.body);
-  return data;
+  const userId = req.user.id;
+
+  const existingShop = await ShopCollection.findOne({ owner: userId });
+  if (existingShop) throw createHttpError(404, "User already has a shop");
+
+  const shop = await ShopCollection.create({ ...req.body, owner: userId });
+
+  await CustomerCollection.findByIdAndUpdate(userId, { shop: shop._id });
+  return shop;
 };
 
 export const getShopInfo = async (req) => {
+  const userId = req.user.id;
   const { shopId } = req.params;
 
-  const data = await ShopCollection.findById(shopId);
-  return data;
+  const shop = await ShopCollection.findOne({
+    _id: shopId,
+    owner: userId,
+  });
+  if (!shop) throw createHttpError(404, "Shop not found");
+
+  return shop;
 };
 
 export const updateShop = async (req) => {
+  const userId = req.user.id;
   const { shopId } = req.params;
 
-  const updatedData = await ShopCollection.findByIdAndUpdate(shopId, req.body);
-  return updatedData;
+  const existingShop = await ShopCollection.findOne({
+    _id: shopId,
+    owner: userId,
+  });
+  if (!existingShop) throw createHttpError(404, "Shop not found");
+
+  const updatedShop = await ShopCollection.findByIdAndUpdate(shopId, req.body, {
+    new: true,
+  });
+  return updatedShop;
 };
 
 export const getProducts = async (req) => {
+  const userId = req.user.id;
   const { shopId } = req.params;
 
-  const shop = await ShopCollection.findById(shopId).populate("productIds");
+  const shop = await ShopCollection.findOne({
+    _id: shopId,
+    owner: userId,
+  }).populate("productIds");
   if (!shop) throw createHttpError(404, "Shop not found");
 
   return shop.productIds;
 };
 
 export const addProduct = async (req) => {
+  const userId = req.user.id;
   const { shopId } = req.params;
 
-  const shop = await ShopCollection.findById(shopId);
+  const shop = await ShopCollection.findOne({
+    _id: shopId,
+    owner: userId,
+  });
   if (!shop) throw createHttpError(404, "Shop not found");
 
   const product = await ProductsCollection.create({
@@ -48,28 +80,28 @@ export const addProduct = async (req) => {
 };
 
 export const getProductById = async (req) => {
+  const userId = req.user.id;
   const { shopId, productId } = req.params;
 
-  const shop = await ShopCollection.findById(shopId);
+  const shop = await ShopCollection.findById({
+    _id: shopId,
+    owner: userId,
+  });
   if (!shop) throw createHttpError(404, "Shop not found");
-
-  if (!shop.productIds.includes(productId)) {
-    throw createHttpError(404, "Product not found in this shop");
-  }
 
   const product = await ProductsCollection.findById(productId);
   return product;
 };
 
 export const updateProductById = async (req) => {
+  const userId = req.user.id;
   const { shopId, productId } = req.params;
 
-  const shop = await ShopCollection.findById(shopId);
+  const shop = await ShopCollection.findById({
+    _id: shopId,
+    owner: userId,
+  });
   if (!shop) throw createHttpError(404, "Shop not found");
-
-  if (!shop.productIds.includes(productId)) {
-    throw createHttpError(404, "Product not found in this shop");
-  }
 
   const updatedProduct = await ProductsCollection.findByIdAndUpdate(
     productId,
@@ -81,9 +113,13 @@ export const updateProductById = async (req) => {
 };
 
 export const deleteProductById = async (req) => {
+  const userId = req.user.id;
   const { shopId, productId } = req.params;
 
-  const shop = await ShopCollection.findById(shopId);
+  const shop = await ShopCollection.findOne({
+    _id: shopId,
+    owner: userId,
+  });
   if (!shop) throw createHttpError(404, "Shop not found");
 
   if (!shop.productIds.includes(productId)) {

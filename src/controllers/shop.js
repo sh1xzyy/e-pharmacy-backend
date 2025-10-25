@@ -36,6 +36,7 @@ export const updateShopController = async (req, res) => {
   res.status(200).json({
     status: 200,
     message: "Shop updated successfully",
+    data,
   });
 };
 

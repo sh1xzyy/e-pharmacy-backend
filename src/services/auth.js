@@ -17,7 +17,9 @@ export const registerUser = async (payload) => {
     password: hashedPassword,
   });
 
-  return newUser;
+  const { password: ps, ...userWithoutPass } = newUser.toObject();
+
+  return userWithoutPass;
 };
 
 export const loginUser = async (req, res) => {
