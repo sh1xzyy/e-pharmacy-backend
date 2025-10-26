@@ -10,12 +10,15 @@ import { statisticsRouter } from "./routes/statistics.js";
 
 export const setupServer = () => {
   const app = express();
+  const apiRouter = express.Router();
+
   app.use(cors());
   app.use(express.json());
   app.use(cookieParser());
-  app.use("/user", authRouter);
-  app.use("/shop", shopRouter);
-  app.use("/statistics", statisticsRouter);
+  apiRouter.use("/user", authRouter);
+  apiRouter.use("/shop", shopRouter);
+  apiRouter.use("/statistics", statisticsRouter);
+  app.use("/api", apiRouter);
 
   app.use(notFoundHandler);
   app.use(errorHandler);
