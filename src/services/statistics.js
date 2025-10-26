@@ -3,6 +3,7 @@ import { IncomeExpensesCollection } from "../db/models/IncomeExpenses.js";
 import { SuppliersCollection } from "../db/models/Suppliers.js";
 import { CustomerCollection } from "../db/models/Customer.js";
 import { ProductsCollection } from "../db/models/Products.js";
+import { OrderCollection } from "../db/models/Orders.js";
 
 export const getStatistics = async (req) => {
   const userId = req.users.id;
@@ -30,4 +31,11 @@ export const getStatistics = async (req) => {
     recentCustomers,
     incomeExpenses: lastIncomeExpenses,
   };
+};
+
+export const getGoodStatisticsById = async (req) => {
+  const { clientId } = req.params;
+
+  const usersOrders = await OrderCollection.find({ owner: clientId });
+  return usersOrders;
 };
