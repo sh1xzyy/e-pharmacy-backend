@@ -6,6 +6,7 @@ import { errorHandler } from "./middlewares/errorHandler.js";
 import { authRouter } from "./routes/auth.js";
 import cookieParser from "cookie-parser";
 import { shopRouter } from "./routes/shop.js";
+import { statisticsRouter } from "./routes/statistics.js";
 
 export const setupServer = () => {
   const app = express();
@@ -14,6 +15,7 @@ export const setupServer = () => {
   app.use(cookieParser());
   app.use("/user", authRouter);
   app.use("/shop", shopRouter);
+  app.use("/statistics", statisticsRouter);
 
   app.use(notFoundHandler);
   app.use(errorHandler);
