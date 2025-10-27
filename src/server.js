@@ -10,12 +10,13 @@ import { statisticsRouter } from "./routes/statistics.js";
 
 export const setupServer = () => {
   const app = express();
+
   app.use(cors());
   app.use(express.json());
   app.use(cookieParser());
-  app.use("/user", authRouter);
-  app.use("/shop", shopRouter);
-  app.use("/statistics", statisticsRouter);
+  app.use("/api/user", authRouter);
+  app.use("/api/shop", shopRouter);
+  app.use("/api/statistics", statisticsRouter);
 
   app.use(notFoundHandler);
   app.use(errorHandler);

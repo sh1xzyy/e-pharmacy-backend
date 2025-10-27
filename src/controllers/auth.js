@@ -17,13 +17,12 @@ export const registerController = async (req, res) => {
 };
 
 export const loginController = async (req, res) => {
-  const { accessToken, refreshToken } = await loginUser(req, res);
+  const data = await loginUser(req, res);
 
   res.status(201).json({
     status: 201,
     message: "Successfully login user",
-    accessToken,
-    refreshToken,
+    data,
   });
 };
 
