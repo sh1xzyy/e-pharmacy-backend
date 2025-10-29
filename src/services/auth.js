@@ -63,10 +63,6 @@ export const refreshUser = async (req, res) => {
   const { refreshToken } = req.cookies;
 
   if (!refreshToken) {
-    throw createHttpError(400, "No refresh token provided");
-  }
-
-  if (!refreshToken) {
     throw createHttpError(400, "No refresh token");
   }
 
