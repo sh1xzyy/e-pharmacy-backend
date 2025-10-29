@@ -11,7 +11,12 @@ import { statisticsRouter } from "./routes/statistics.js";
 export const setupServer = () => {
   const app = express();
 
-  app.use(cors());
+  app.use(
+    cors({
+      origin: getEnvVar("FRONTEND_URL"),
+      credentials: true,
+    })
+  );
   app.use(express.json());
   app.use(cookieParser());
   app.use("/api/user", authRouter);
