@@ -17,7 +17,7 @@ export const registerUser = async (payload) => {
     password: hashedPassword,
   });
 
-  const { password: ps, ...userWithoutPass } = newUser.toObject();
+  const { password: pass, ...userWithoutPass } = newUser.toObject();
 
   return { user: userWithoutPass };
 };
@@ -55,7 +55,7 @@ export const loginUser = async (req, res) => {
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
 
-  const { password: ps, ...userWithoutPass } = user.toObject();
+  const { password: pass, ...userWithoutPass } = user.toObject();
 
   return { user: userWithoutPass, accessToken, refreshToken };
 };
