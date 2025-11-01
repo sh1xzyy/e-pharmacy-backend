@@ -10,10 +10,11 @@ import { statisticsRouter } from "./routes/statistics.js";
 
 export const setupServer = () => {
   const app = express();
+  const FRONTEND_URL = getEnvVar("FRONTEND_URL");
 
   app.use(
     cors({
-      origin: getEnvVar("FRONTEND_URL"),
+      origin: ['http://localhost:3000', FRONTEND_URL],
       credentials: true,
     })
   );
